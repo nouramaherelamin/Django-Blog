@@ -13,14 +13,6 @@ A professional, fully-featured Full-Stack Django blog application designed for p
 - Real-time statistics tracking for views, posts, and categories.
 - SEO-friendly URLs and meta structures.
 
-## Screenshots
-
-**Homepage — Hero Section**
-![Homepage Hero](screenshot/homepage.png)
-
-**Homepage — Full Page**
-![Homepage Full](screenshot/homepage-full.png)
-
 **Homepage — Wide View**
 ![Homepage Wide](screenshot/homepage-wide.png)
 
