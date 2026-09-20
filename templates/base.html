@@ -102,63 +102,132 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-light text-dark py-5 border-top">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 mb-4 mb-md-0">
-                    <h5 class="mb-3 text-primary fw-bold">
-                        <i class="fas fa-blog me-2"></i>My Blog
-                    </h5>
-                    <p class="text-muted pe-md-5">
-                        Sharing knowledge, one post at a time. Discover amazing stories, insights, and ideas from our community of writers.
-                    </p>
-                    <div class="social-links mt-3">
-                        <a href="https://github.com/nouramaherelamin" target="_blank" class="text-dark me-3 fs-5"><i class="fab fa-github"></i></a>
-                        <a href="https://www.linkedin.com/in/nouramaherelamin/" target="_blank" class="text-dark me-3 fs-5"><i class="fab fa-linkedin"></i></a>
-                        <a href="#" class="text-dark me-3 fs-5"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-dark fs-5"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <h6 class="mb-3">Quick Links</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="{% url 'blog:home' %}" class="text-muted text-decoration-none">Home</a></li>
-                        <li><a href="{% url 'blog:about' %}" class="text-muted text-decoration-none">About</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Contact</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Privacy Policy</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h6 class="mb-3">Categories</h6>
-                    <ul class="list-unstyled">
-                        {% for category in categories|slice:":4" %}
-                            <li>
-                                <a href="{% url 'blog:category_posts' category.id %}" 
-                                   class="text-muted text-decoration-none">
-                                    {{ category.name }} ({{ category.post_count }})
-                                </a>
-                            </li>
-                        {% empty %}
-                            <li class="text-muted">No categories yet</li>
-                        {% endfor %}
-                    </ul>
+<footer class="bg-light text-dark py-5 border-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <h5 class="mb-3 text-primary fw-bold">
+                    <i class="fas fa-blog me-2"></i>My Blog
+                </h5>
+
+                <p class="text-muted pe-md-5">
+                    Sharing knowledge, one post at a time. Discover amazing stories,
+                    insights, and ideas from our community of writers.
+                </p>
+
+                <div class="social-links mt-3">
+                    <a href="https://github.com/nouramaherelamin"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="text-dark me-3 fs-5"
+                       aria-label="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+
+                    <a href="https://www.linkedin.com/in/nouramaherelamin/"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="text-dark fs-5"
+                       aria-label="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
                 </div>
             </div>
-            <hr class="my-4 border-secondary opacity-25">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <p class="text-muted mb-0 small">
-                        &copy; {% now "Y" %} My Blog. Developed by Noura Maher Elamin.
-                    </p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="text-muted mb-0 small">
-                        Built with Django &amp; Bootstrap 5.
-                    </p>
-                </div>
+
+            <div class="col-md-3">
+                <h6 class="mb-3">Quick Links</h6>
+
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="{% url 'blog:home' %}"
+                           class="text-muted text-decoration-none">
+                            Home
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'blog:about' %}"
+                           class="text-muted text-decoration-none">
+                            About
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'blog:contact' %}"
+                           class="text-muted text-decoration-none">
+                            Contact
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#"
+                           class="text-muted text-decoration-none">
+                            Privacy Policy
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-md-3">
+                <h6 class="mb-3">Categories</h6>
+
+                <ul class="list-unstyled">
+                    {% for category in categories|slice:":4" %}
+                        <li>
+                            <a href="{% url 'blog:category_posts' category.id %}"
+                               class="text-muted text-decoration-none">
+                                {{ category.name }} ({{ category.post_count }})
+                            </a>
+                        </li>
+                    {% empty %}
+                        <li class="text-muted">No categories yet</li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
-    </footer>
+
+        <hr class="my-4 border-secondary opacity-25">
+
+        <!-- Copyright -->
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <p class="text-muted mb-0 small">
+                    &copy; {% now "Y" %}
+                    <strong>Noura Maher Elamin</strong>.
+                    All Rights Reserved.
+                </p>
+            </div>
+
+            <div class="col-md-6 text-md-end">
+                <p class="text-muted mb-0 small">
+                    Built with
+                    <strong>Django</strong> &amp;
+                    <strong>Bootstrap 5</strong>.
+                </p>
+            </div>
+        </div>
+
+        <!-- Developer Links -->
+        <div class="text-center mt-3">
+            <small class="text-muted">
+                Developed by
+                <a href="https://github.com/nouramaherelamin"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="text-decoration-none fw-semibold">
+                    Noura Maher Elamin
+                </a>
+                ·
+                <a href="https://www.linkedin.com/in/nouramaherelamin/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="text-decoration-none fw-semibold">
+                    LinkedIn
+                </a>
+            </small>
+        </div>
+    </div>
+</footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
