@@ -23,10 +23,10 @@ load_dotenv(BASE_DIR / '.env')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-SECRET_KEY = os.environ.get(
-    'SECRET_KEY',
-    'django-insecure-default-key-for-dev-only'
-)
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY') or os.environ.get('SECRET_KEY')
+
+if not SECRET_KEY:
+    raise ValueError('DJANGO_SECRET_KEY is not set')
 
 DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
