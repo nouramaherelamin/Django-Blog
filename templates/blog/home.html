@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+{% load static blog_tags %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <!-- Hero Section -->
+    {% if not search_query and not selected_category %}
+    <div class="hero-section text-white position-relative" style="background: url('{% if featured_posts %}{{ featured_posts.0.image.url }}{% else %}https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=2070{% endif %}') center/cover; padding: 120px 0;">
+        <div class="container position-relative z-1 reveal-up">
+            <div class="row align-items-center">
+                <div class="col-lg-7 mb-5 mb-lg-0">
+                    <p class="text-uppercase fw-semibold tracking-wider mb-3 opacity-75 small reveal-up stagger-1">EXPLORE &bull; LEARN &bull; SHARE</p>
+                    <h1 class="display-3 fw-bold mb-4 reveal-up stagger-2">Welcome to My Blog</h1>
+                    <p class="lead mb-5 opacity-90 pe-lg-5 fs-4 reveal-up stagger-3">
+                        Discover amazing stories, insights, and ideas from our community of writers.
+                    </p>
+                    <div class="d-flex gap-3 reveal-up stagger-3">
+                        <a href="#posts-container" class="btn btn-primary btn-lg px-4 py-3 fw-semibold shadow-sm"><i class="fas fa-book-open me-2"></i>Explore Posts</a>
+                        <a href="{% url 'blog:about' %}" class="btn btn-outline-light btn-lg px-4 py-3 fw-semibold shadow-sm"><i class="fas fa-info-circle me-2"></i>Learn More</a>
+                    </div>
+                </div>
+                <div class="col-lg-5 mt-5 mt-lg-0 reveal-up stagger-3">
+                    <div class="row g-3">
+                        <div class="col-4">
+                            <div class="stat-card p-4 rounded-4 text-center h-100">
+                                <i class="fas fa-eye fa-2x mb-3 text-primary-light"></i>
+                                <div class="fs-3 fw-bold counter-value" data-target="{{ total_site_views }}">0</div>
+                                <small class="text-uppercase opacity-75 fw-medium" style="font-size: 0.75rem;">Total Views</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-card p-4 rounded-4 text-center h-100">
+                                <i class="fas fa-newspaper fa-2x mb-3 text-primary-light"></i>
+                                <div class="fs-3 fw-bold counter-value" data-target="{{ total_site_posts }}">0</div>
+                                <small class="text-uppercase opacity-75 fw-medium" style="font-size: 0.75rem;">Blog Posts</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-card p-4 rounded-4 text-center h-100">
+                                <i class="fas fa-tags fa-2x mb-3 text-primary-light"></i>
+                                <div class="fs-3 fw-bold counter-value" data-target="{{ total_site_categories }}">0</div>
+                                <small class="text-uppercase opacity-75 fw-medium" style="font-size: 0.75rem;">Categories</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="container py-5">
+        <!-- Search Results Info -->
+        {% if search_query or selected_category %}
+        <div class="row mb-5 reveal-up">
+            <div class="col-12">
+                <div class="alert alert-info d-flex align-items-center rounded-4 shadow-sm border-0">
+                    <i class="fas fa-info-circle me-3 fs-4"></i>
+                    <div>
+                        {% if search_query %}
+                            <strong class="fs-5">Search Results for:</strong> "{{ search_query }}" 
+                            {% if selected_category %}in {{ selected_category.name }}{% endif %}
+                        {% elif selected_category %}
+                            <strong class="fs-5">Category:</strong> {{ selected_category.name }}
+                        {% endif %}
+                        <span class="d-block opacity-75 mt-1">{{ total_posts }} post{{ total_posts|pluralize }} found</span>
+                    </div>
+                    <a href="{% url 'blog:home' %}" class="btn btn-sm btn-outline-primary ms-auto rounded-pill px-3">
+                        <i class="fas fa-times me-1"></i>Clear
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Featured Posts (only on home page) -->
+                {% if featured_posts and not has_filters %}
+                <section class="mb-5 reveal-up">
+                    <h2 class="section-title mb-4 d-flex align-items-center">
+                        <i class="fas fa-star text-warning me-3 fs-3"></i>Featured Posts
+                    </h2>
+                    <div class="row g-4">
+                        {% for post in featured_posts %}
+                        <div class="col-md-6 mb-4">
+                            <article class="card blog-card h-100 border-0">
+                                <div class="position-relative">
+                                    {% if post.image %}
+                                        <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
+                                    {% else %}
+                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-image fa-3x text-muted opacity-25"></i>
+                                        </div>
+                                    {% endif %}
+                                    <span class="badge bg-primary position-absolute top-0 end-0 m-3 shadow-sm rounded-pill px-3 py-2">
+                                        <i class="fas fa-star me-1 text-warning"></i>Featured
+                                    </span>
+                                </div>
+                                <div class="card-body p-4 d-flex flex-column">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-1 mb-3 align-self-start">{{ post.category.name }}</span>
+                                    <h4 class="card-title mb-3">
+                                        <a href="{% url 'blog:post_detail' post.slug %}" class="text-decoration-none">
+                                            {{ post.title }}
+                                        </a>
+                                    </h4>
+                                    <p class="card-text flex-grow-1">{{ post.excerpt|truncatewords:20 }}</p>
+                                    <div class="d-flex align-items-center mt-3 pt-3 border-top">
+                                        <div class="me-3">
+                                            <i class="fas fa-user-circle text-muted me-1"></i>
+                                            <small class="fw-medium">{{ post.author.username }}</small>
+                                        </div>
+                                        <div>
+                                            <i class="far fa-calendar-alt text-muted me-1"></i>
+                                            <small class="fw-medium text-muted">{{ post.created_date|date:"M d, Y" }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+                <!-- All Posts Section -->
+                <section class="reveal-up stagger-1">
+                    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3">
+                        <h2 class="section-title mb-0 d-flex align-items-center">
+                            <i class="fas fa-stream text-primary me-3 fs-4"></i>
+                            {% if has_filters %}Filtered Posts{% else %}Latest Posts{% endif %}
+                        </h2>
+                        
+                        <div class="d-flex align-items-center gap-3">
+                            <!-- Filter and Sort Controls -->
+                            <form method="GET" class="d-flex gap-2" id="filter-sort-form">
+                                {% if search_query %}<input type="hidden" name="search" value="{{ search_query }}">{% endif %}
+                                <select name="category" class="form-select form-select-sm rounded-pill px-3" onchange="this.form.submit()">
+                                    <option value="">All Categories</option>
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}" {% if selected_category.id == category.id %}selected{% endif %}>
+                                            {{ category.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <select name="sort" class="form-select form-select-sm rounded-pill px-3" onchange="this.form.submit()">
+                                    <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest</option>
+                                    <option value="oldest" {% if sort_by == 'oldest' %}selected{% endif %}>Oldest</option>
+                                    <option value="popular" {% if sort_by == 'popular' %}selected{% endif %}>Popular</option>
+                                </select>
+                            </form>
+
+                            <!-- Grid/List View Toggle -->
+                            <div class="view-toggle btn-group shadow-sm rounded-pill" role="group">
+                                <button type="button" class="btn btn-primary rounded-start-pill px-3" id="btn-grid" aria-label="Grid View">
+                                    <i class="fas fa-th-large"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-primary rounded-end-pill px-3" id="btn-list" aria-label="List View">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if page_obj %}
+                        <div class="row g-4" id="posts-container">
+                            {% for post in page_obj %}
+                            <div class="col-md-6 reveal-up stagger-{{ forloop.counter|default:1 }}">
+                                <article class="card blog-card h-100 border-0">
+                                    <div class="position-relative overflow-hidden">
+                                        {% if post.image %}
+                                            <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
+                                        {% else %}
+                                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center">
+                                                <i class="fas fa-image fa-2x text-muted opacity-25"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div class="position-absolute top-0 start-0 m-3">
+                                            <span class="badge bg-dark bg-opacity-75 backdrop-blur text-white rounded-pill px-3 py-2">
+                                                {{ post.category.name }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="card-body p-4 d-flex flex-column">
+                                        <h4 class="card-title mb-3">
+                                            <a href="{% url 'blog:post_detail' post.slug %}" class="text-decoration-none">
+                                                {{ post.title }}
+                                            </a>
+                                        </h4>
+                                        <p class="card-text flex-grow-1">{{ post.excerpt|truncatewords:20 }}</p>
+                                        <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-3">
+                                                    <small class="fw-medium text-muted"><i class="far fa-calendar-alt me-1"></i> {{ post.created_date|date:"M d" }}</small>
+                                                </div>
+                                                <div>
+                                                    <small class="fw-medium text-muted"><i class="far fa-eye me-1"></i> {{ post.views|default:0 }}</small>
+                                                </div>
+                                            </div>
+                                            <a href="{% url 'blog:post_detail' post.slug %}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                                                Read More <i class="fas fa-arrow-right ms-1"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Pagination -->
+                        {% if page_obj.has_other_pages %}
+                        <nav aria-label="Posts pagination" class="mt-5 pt-4 border-top reveal-up">
+                            <ul class="pagination justify-content-center mb-0">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item me-2">
+                                        <a class="page-link rounded-circle shadow-sm" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category.id }}{% endif %}{% if sort_by != 'newest' %}&sort={{ sort_by }}{% endif %}">
+                                            <i class="fas fa-angle-left"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                        <li class="page-item active me-2">
+                                            <span class="page-link rounded-circle shadow-sm">{{ num }}</span>
+                                        </li>
+                                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                        <li class="page-item me-2">
+                                            <a class="page-link rounded-circle shadow-sm" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category.id }}{% endif %}{% if sort_by != 'newest' %}&sort={{ sort_by }}{% endif %}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link rounded-circle shadow-sm" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category.id }}{% endif %}{% if sort_by != 'newest' %}&sort={{ sort_by }}{% endif %}">
+                                            <i class="fas fa-angle-right"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-5 bg-light rounded-4 reveal-up">
+                            <i class="fas fa-search fa-3x text-muted mb-4 opacity-50"></i>
+                            <h4 class="text-muted fw-semibold">No posts found</h4>
+                            <p class="text-muted mb-0">
+                                {% if search_query %}
+                                    Try adjusting your search terms or 
+                                    <a href="{% url 'blog:home' %}" class="text-decoration-none border-bottom border-primary pb-1">browse all posts</a>.
+                                {% else %}
+                                    Check back later for new content.
+                                {% endif %}
+                            </p>
+                        </div>
+                    {% endif %}
+                </section>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="sidebar sticky-top" style="top: 100px; z-index: 1;">
+                    {% show_sidebar %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

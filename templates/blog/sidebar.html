@@ -1,0 +1,126 @@
+<!-- Search Form for Sidebar -->
+<div class="card sidebar-widget mb-4 border-0 shadow-sm rounded-4 reveal-up">
+    <div class="card-body p-4">
+        <h5 class="card-title fw-bold mb-3 d-flex align-items-center">
+            <i class="fas fa-search text-primary me-2"></i>Search
+        </h5>
+        <form class="d-flex" method="GET" action="{% url 'blog:home' %}">
+            <input type="text" 
+                   name="search" 
+                   class="form-control rounded-start-pill border-end-0 shadow-none bg-light"
+                   placeholder="Keywords..." 
+                   value="{{ request.GET.search|default:'' }}"
+                   autocomplete="off">
+            <button class="btn btn-primary rounded-end-pill px-3" type="submit" aria-label="Search">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Trending Posts Widget -->
+{% if trending_posts %}
+<div class="card sidebar-widget mb-4 border-0 shadow-sm rounded-4 reveal-up stagger-1">
+    <div class="card-body p-4">
+        <h5 class="card-title fw-bold mb-4 d-flex align-items-center">
+            <i class="fas fa-fire text-danger me-2"></i>Trending
+        </h5>
+        <div class="d-flex flex-column gap-3">
+            {% for post in trending_posts %}
+            <div class="trending-item d-flex align-items-center {% if not forloop.last %}border-bottom pb-3{% endif %}">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" class="rounded-3 me-3 object-fit-cover shadow-sm" style="width: 70px; height: 70px; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                {% else %}
+                    <div class="bg-light rounded-3 me-3 d-flex align-items-center justify-content-center text-muted" style="width: 70px; height: 70px;">
+                        <i class="fas fa-image fs-4"></i>
+                    </div>
+                {% endif %}
+                <div class="flex-grow-1 min-w-0">
+                    <h6 class="mb-1 lh-sm fw-semibold">
+                        <a href="{% url 'blog:post_detail' post.slug %}" class="text-decoration-none text-dark hover-text-primary text-truncate d-block" style="white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                            {{ post.title }}
+                        </a>
+                    </h6>
+                    <small class="text-muted d-flex align-items-center" style="font-size: 0.8rem;">
+                        <i class="far fa-eye me-1"></i> {{ post.views_count|default:0 }} views
+                    </small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Categories Widget -->
+{% if categories %}
+<div class="card sidebar-widget mb-4 border-0 shadow-sm rounded-4 reveal-up stagger-2">
+    <div class="card-body p-4">
+        <h5 class="card-title fw-bold mb-4 d-flex align-items-center">
+            <i class="fas fa-folder-open text-primary me-2"></i>Categories
+        </h5>
+        <div class="d-flex flex-wrap gap-2">
+            {% for category in categories %}
+            <a href="{% url 'blog:category_posts' category.id %}" 
+               class="btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center px-3 py-1">
+                {{ category.name }}
+                <span class="badge bg-primary text-white rounded-circle ms-2" style="font-size: 0.7rem; min-width: 1.5rem; padding: 0.2rem 0.4rem;">{{ category.post_count }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Recent Posts Widget -->
+{% if recent_posts %}
+<div class="card sidebar-widget mb-4 border-0 shadow-sm rounded-4 reveal-up stagger-3">
+    <div class="card-body p-4">
+        <h5 class="card-title fw-bold mb-4 d-flex align-items-center">
+            <i class="fas fa-clock text-primary me-2"></i>Recent
+        </h5>
+        <div class="d-flex flex-column gap-3">
+            {% for post in recent_posts %}
+            <div class="recent-post-item d-flex align-items-center {% if not forloop.last %}border-bottom pb-3{% endif %}">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" class="rounded-3 me-3 object-fit-cover shadow-sm" style="width: 70px; height: 70px; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                {% else %}
+                    <div class="bg-light rounded-3 me-3 d-flex align-items-center justify-content-center text-muted" style="width: 70px; height: 70px;">
+                        <i class="fas fa-image fs-4"></i>
+                    </div>
+                {% endif %}
+                <div class="flex-grow-1 min-w-0">
+                    <h6 class="mb-1 lh-sm fw-semibold">
+                        <a href="{% url 'blog:post_detail' post.slug %}" class="text-decoration-none text-dark hover-text-primary text-truncate d-block" style="white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                            {{ post.title }}
+                        </a>
+                    </h6>
+                    <small class="text-muted d-flex align-items-center" style="font-size: 0.8rem;">
+                        <i class="far fa-calendar-alt me-1"></i> {{ post.created_date|date:"M d, Y" }}
+                    </small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Archive Widget -->
+{% if archives %}
+<div class="card sidebar-widget border-0 shadow-sm rounded-4 reveal-up stagger-3">
+    <div class="card-body p-4">
+        <h5 class="card-title fw-bold mb-3 d-flex align-items-center">
+            <i class="fas fa-calendar-alt text-primary me-2"></i>Archive
+        </h5>
+        <div class="list-group list-group-flush border-0 mt-2">
+            {% for archive in archives|slice:":5" %}
+            <a href="{% url 'blog:archive_month' archive.year archive.month %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 border-bottom border-light py-2 bg-transparent text-dark hover-text-primary">
+                <span class="fw-medium">{{ archive.date|date:"F Y" }}</span>
+                <i class="fas fa-chevron-right text-muted small opacity-50"></i>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}

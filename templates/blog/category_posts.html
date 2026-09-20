@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} - My Simple Blog{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1>Category: {{ category.name }}</h1>
+        {% if category.description %}
+            <p class="lead">{{ category.description }}</p>
+        {% endif %}
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    {% if page_obj %}
+        {% for post in page_obj %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{{ post.get_absolute_url }}" class="text-decoration-none">
+                            {{ post.title }}
+                        </a>
+                    </h5>
+                    <p class="card-text">{{ post.excerpt|truncatewords:20 }}</p>
+                    <small class="text-muted">
+                        By {{ post.author.username }} • {{ post.created_date|date:"M d, Y" }}
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="col-12">
+            <nav aria-label="Posts pagination">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                    </li>
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="col-12 text-center py-5">
+            <h4>No posts in this category yet</h4>
+            <p class="text-muted">Check back later for new posts!</p>
+        </div>
+    {% endif %}
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <a href="{% url 'blog:home' %}" class="btn btn-secondary">← Back to All Posts</a>
+    </div>
+</div>
+{% endblock %}

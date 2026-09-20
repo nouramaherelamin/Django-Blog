@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Explore - My Blog{% endblock %}
+
+{% block content %}
+
+<section class="py-5">
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <span class="text-primary fw-bold">EXPLORE</span>
+            <h1 class="display-5 fw-bold mt-2">Explore Our Posts</h1>
+            <p class="text-muted">
+                Discover the latest articles, ideas and stories.
+            </p>
+        </div>
+
+        <div class="row g-4">
+
+            {% for post in page_obj %}
+            <div class="col-lg-4 col-md-6">
+
+                <div class="card h-100 border-0 shadow-sm">
+
+                    {% if post.image %}
+                    <img src="{{ post.image.url }}"
+                         class="card-img-top"
+                         alt="{{ post.title }}"
+                         style="height:220px; object-fit:cover;">
+                    {% endif %}
+
+                    <div class="card-body p-4">
+
+                        {% if post.category %}
+                        <span class="badge bg-primary mb-2">
+                            {{ post.category.name }}
+                        </span>
+                        {% endif %}
+
+                        <h5 class="fw-bold">
+                            {{ post.title }}
+                        </h5>
+
+                        <p class="text-muted">
+                            {{ post.excerpt|truncatewords:20 }}
+                        </p>
+
+                        <a href="{% url 'blog:post_detail' post.slug %}"
+                           class="btn btn-outline-primary">
+                            Read More
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <div class="col-12 text-center py-5">
+                <h4>No posts available yet.</h4>
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+
+<section class="about-page">
+
+    <!-- About Hero -->
+    <div class="about-hero">
+        <div class="container">
+            <div class="about-hero-content">
+                <span class="about-eyebrow">
+                    <i class="fas fa-sparkles me-2"></i>
+                    ABOUT THE BLOG
+                </span>
+
+                <h1>About My Blog</h1>
+
+                <p>
+                    A simple space for sharing ideas, knowledge,
+                    stories, and useful content.
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Introduction -->
+    <section class="about-intro">
+        <div class="container">
+            <div class="about-intro-card">
+
+                <div class="about-intro-icon">
+                    <i class="fas fa-blog"></i>
+                </div>
+
+                <div>
+                    <span class="about-section-label">WHO WE ARE</span>
+
+                    <h2>Welcome to My Blog</h2>
+
+                    <p>
+                        This blog is built with Django and designed to provide
+                        a clean and simple space for creating, organizing,
+                        and sharing blog content.
+                    </p>
+
+                    <p>
+                        Explore different posts, discover categories,
+                        read stories, and interact with the content
+                        through a modern and responsive interface.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Features -->
+    <section class="about-features">
+        <div class="container">
+
+            <div class="about-section-heading">
+                <span class="about-section-label">WHAT YOU CAN DO</span>
+                <h2>Everything You Need</h2>
+                <p>
+                    Simple features designed to make the blog easy to explore.
+                </p>
+            </div>
+
+            <div class="row g-4">
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="about-feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-pen-nib"></i>
+                        </div>
+
+                        <h3>Create Posts</h3>
+
+                        <p>
+                            Create and publish blog posts with organized
+                            content and useful information.
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="about-feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+
+                        <h3>Categories</h3>
+
+                        <p>
+                            Organize posts into categories and make
+                            content easier to discover.
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="about-feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+
+                        <h3>Comments</h3>
+
+                        <p>
+                            Give readers the opportunity to interact
+                            and share their thoughts.
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="about-feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-magnifying-glass"></i>
+                        </div>
+
+                        <h3>Search</h3>
+
+                        <p>
+                            Quickly find posts and discover content
+                            using the built-in search functionality.
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="about-feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+
+                        <h3>Easy Reading</h3>
+
+                        <p>
+                            Browse posts through a clean interface
+                            designed for a comfortable reading experience.
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="about-feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-screen-button"></i>
+                        </div>
+
+                        <h3>Responsive</h3>
+
+                        <p>
+                            Enjoy the blog across desktop, tablet,
+                            and mobile devices.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Technology -->
+    <section class="about-tech">
+        <div class="container">
+
+            <div class="about-section-heading">
+                <span class="about-section-label">TECHNOLOGY</span>
+                <h2>Built With</h2>
+            </div>
+
+            <div class="tech-grid">
+
+                <div class="tech-item">
+                    <i class="fab fa-python"></i>
+                    <div>
+                        <strong>Django</strong>
+                        <span>Backend Framework</span>
+                    </div>
+                </div>
+
+                <div class="tech-item">
+                    <i class="fab fa-bootstrap"></i>
+                    <div>
+                        <strong>Bootstrap 5</strong>
+                        <span>Responsive UI</span>
+                    </div>
+                </div>
+
+                <div class="tech-item">
+                    <i class="fab fa-js"></i>
+                    <div>
+                        <strong>JavaScript</strong>
+                        <span>Interactive Features</span>
+                    </div>
+                </div>
+
+                <div class="tech-item">
+                    <i class="fab fa-html5"></i>
+                    <div>
+                        <strong>HTML & CSS</strong>
+                        <span>Frontend Structure</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- CTA -->
+    <section class="about-cta">
+        <div class="container">
+
+            <div class="about-cta-box">
+
+                <div>
+                    <span class="about-section-label">READY TO EXPLORE?</span>
+
+                    <h2>Discover the Latest Posts</h2>
+
+                    <p>
+                        Explore stories, ideas, and useful content
+                        from the blog.
+                    </p>
+                </div>
+
+                <a href="{% url 'blog:home' %}" class="about-cta-button">
+                    <i class="fas fa-arrow-right me-2"></i>
+                    Explore Blog
+                </a>
+
+            </div>
+
+        </div>
+    </section>
+
+</section>
+
+{% endblock %}

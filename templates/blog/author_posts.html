@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Posts by {{ author.get_full_name|default:author.username }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8 mx-auto text-center">
+            <h1 class="display-4 fw-bold mb-3">
+                <i class="fas fa-user-circle text-primary me-2"></i>
+                {{ author.get_full_name|default:author.username }}
+            </h1>
+            <p class="lead text-muted">
+                Author Profile
+            </p>
+            <div class="d-flex justify-content-center align-items-center gap-4 text-muted mt-4">
+                <div>
+                    <i class="fas fa-file-alt me-2 text-primary"></i>
+                    <strong>{{ total_posts }}</strong> Published Posts
+                </div>
+                <div>
+                    <i class="fas fa-calendar-alt me-2 text-primary"></i>
+                    Joined {{ author.date_joined|date:"F Y" }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            {% if page_obj %}
+                <div class="row g-4">
+                    {% for post in page_obj %}
+                    <div class="col-md-6">
+                        <div class="card h-100 shadow-sm border-0 hover-card">
+                            <div class="card-body p-4">
+                                {% if post.category %}
+                                <a href="{% url 'blog:category_posts' post.category.id %}" class="badge bg-primary text-decoration-none mb-3">
+                                    {{ post.category.name }}
+                                </a>
+                                {% endif %}
+                                <h3 class="h5 card-title mb-3">
+                                    <a href="{{ post.get_absolute_url }}" class="text-dark text-decoration-none text-hover-primary">
+                                        {{ post.title }}
+                                    </a>
+                                </h3>
+                                <p class="card-text text-muted mb-4">{{ post.excerpt|truncatewords:20 }}</p>
+                                
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <div class="small text-muted">
+                                        <i class="far fa-calendar-alt me-1"></i> {{ post.created_date|date:"M d, Y" }}
+                                    </div>
+                                    <a href="{{ post.get_absolute_url }}" class="text-primary text-decoration-none fw-semibold">
+                                        Read More <i class="fas fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+                <nav aria-label="Page navigation" class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link shadow-sm border-0 me-2 rounded" href="?page={{ page_obj.previous_page_number }}">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link shadow-sm border-0 mx-1 rounded">{{ num }}</span>
+                                </li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link shadow-sm border-0 mx-1 rounded text-dark" href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link shadow-sm border-0 ms-2 rounded" href="?page={{ page_obj.next_page_number }}">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="display-1 text-muted mb-4">
+                        <i class="fas fa-pen-nib"></i>
+                    </div>
+                    <h3 class="text-muted">No posts published yet.</h3>
+                    <p class="text-muted mb-4">This author hasn't published any articles.</p>
+                    <a href="{% url 'blog:home' %}" class="btn btn-primary px-4 py-2">
+                        <i class="fas fa-home me-2"></i>Back to Home
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

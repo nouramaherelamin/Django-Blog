@@ -1,0 +1,170 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - My Blog</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{% static 'css/style.css' %}?v=3" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg sticky-top bg-white shadow-sm">
+        <div class="container py-2">
+            <a class="navbar-brand fw-bold text-primary" href="{% url 'blog:home' %}">
+                <i class="fas fa-blog me-2"></i>My Blog
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark fw-medium {% if request.resolver_match.url_name == 'home' %}active{% endif %}" 
+                           href="{% url 'blog:home' %}">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark fw-medium {% if request.resolver_match.url_name == 'about' %}active{% endif %}" 
+                           href="{% url 'blog:about' %}">
+                            <i class="fas fa-info-circle me-1"></i>About
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark fw-medium {% if request.resolver_match.url_name == 'explore' %}active{% endif %}" href="{% url 'blog:explore' %}">
+                            <i class="fas fa-th-large me-1"></i>Explore
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark fw-medium {% if request.resolver_match.url_name == 'archive' %}active{% endif %}" href="{% url 'blog:archive' %}">
+                            <i class="fas fa-book-open me-1"></i>Blog
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark fw-medium {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'blog:contact' %}">
+                            <i class="fas fa-envelope me-1"></i>Contact
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- Search Form -->
+                <form class="d-flex search-form" method="GET" action="{% url 'blog:home' %}">
+                    <div class="position-relative">
+                        <input type="text" 
+                               name="search" 
+                               class="form-control rounded-pill search-input px-4"
+                               placeholder="Search posts..." 
+                               value="{{ search_query|default:'' }}"
+                               id="search-input"
+                               autocomplete="off">
+                        <div id="search-suggestions" class="search-suggestions"></div>
+                    </div>
+                    <button class="btn btn-primary rounded-pill ms-2 px-3" type="submit" aria-label="Search">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <!-- Theme toggle placeholder -->
+                    <button id="theme-toggle" class="btn btn-link text-dark ms-2 text-decoration-none" type="button" aria-label="Toggle theme" title="Toggle Light/Dark Mode">
+                        <i id="theme-icon" class="fas fa-moon fs-5"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show m-3" role="alert">
+                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-triangle{% elif message.tags == 'warning' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light text-dark py-5 border-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <h5 class="mb-3 text-primary fw-bold">
+                        <i class="fas fa-blog me-2"></i>My Blog
+                    </h5>
+                    <p class="text-muted pe-md-5">
+                        Sharing knowledge, one post at a time. Discover amazing stories, insights, and ideas from our community of writers.
+                    </p>
+                    <div class="social-links mt-3">
+                        <a href="https://github.com/nouramaherelamin" target="_blank" class="text-dark me-3 fs-5"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/nouramaherelamin/" target="_blank" class="text-dark me-3 fs-5"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-dark me-3 fs-5"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-dark fs-5"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="mb-3">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'blog:home' %}" class="text-muted text-decoration-none">Home</a></li>
+                        <li><a href="{% url 'blog:about' %}" class="text-muted text-decoration-none">About</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Contact</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="mb-3">Categories</h6>
+                    <ul class="list-unstyled">
+                        {% for category in categories|slice:":4" %}
+                            <li>
+                                <a href="{% url 'blog:category_posts' category.id %}" 
+                                   class="text-muted text-decoration-none">
+                                    {{ category.name }} ({{ category.post_count }})
+                                </a>
+                            </li>
+                        {% empty %}
+                            <li class="text-muted">No categories yet</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 border-secondary opacity-25">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="text-muted mb-0 small">
+                        &copy; {% now "Y" %} My Blog. Developed by Noura Maher Elamin.
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted mb-0 small">
+                        Built with Django &amp; Bootstrap 5.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,540 @@
+{% extends 'base.html' %}
+{% load static blog_tags %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .post-header {
+        position: relative;
+        padding: 6rem 0 4rem;
+        margin-bottom: 0;
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .post-header::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(14, 165, 233, 0.9) 0%, rgba(2, 132, 199, 0.95) 100%);
+        z-index: 0;
+    }
+    
+    .post-header > .container {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .post-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .post-content {
+        font-size: 1.125rem;
+        line-height: 1.8;
+        color: var(--text-main);
+    }
+    
+    .post-content h1, .post-content h2, .post-content h3 {
+        margin: 2.5rem 0 1.25rem;
+        font-family: 'Poppins', sans-serif;
+        color: var(--text-main);
+    }
+    
+    .post-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+        margin: 2rem 0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .post-navigation {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 2rem;
+    }
+    
+    .comment-item {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    
+    .related-post-card {
+        transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+        background: var(--bg-card) !important;
+        border: 1px solid var(--border-color) !important;
+    }
+    
+    .related-post-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--card-shadow-hover);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Post Header -->
+<div class="post-header" {% if post.image %}style="background: url('{{ post.image.url }}') center/cover;"{% endif %}>
+    <div class="container reveal-up">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'blog:home' %}" class="text-white-50 text-decoration-none hover-text-white transition">
+                        <i class="fas fa-home me-1"></i> Home
+                    </a>
+                </li>
+                {% if post.category %}
+                <li class="breadcrumb-item">
+                    <a href="{% url 'blog:category_posts' post.category.id %}" class="text-white-50 text-decoration-none hover-text-white transition">
+                        {{ post.category.name }}
+                    </a>
+                </li>
+                {% endif %}
+                <li class="breadcrumb-item active text-white" aria-current="page">
+                    {{ post.title|truncatechars:40 }}
+                </li>
+            </ol>
+        </nav>
+        
+        <div class="row align-items-center">
+            <div class="col-lg-9">
+                <h1 class="display-4 fw-bold mb-4">{{ post.title }}</h1>
+                {% if post.excerpt %}
+                    <p class="lead mb-4 opacity-90 fs-4">{{ post.excerpt }}</p>
+                {% endif %}
+                
+                <div class="d-flex flex-wrap gap-4 mb-4">
+                    <div class="post-meta-item">
+                        <i class="fas fa-user-circle fs-5 opacity-75"></i>
+                        <span>By 
+                            <a href="{% url 'blog:author_posts' post.author.username %}" class="text-white text-decoration-underline hover-text-primary">
+                                {{ post.author.username }}
+                            </a>
+                        </span>
+                    </div>
+                    <div class="post-meta-item">
+                        <i class="far fa-calendar-alt fs-5 opacity-75"></i>
+                        <span>{{ post.created_date|date:"F d, Y" }}</span>
+                    </div>
+                    <div class="post-meta-item">
+                        <i class="far fa-clock fs-5 opacity-75"></i>
+                        <span>{{ reading_time }} min read</span>
+                    </div>
+                    <div class="post-meta-item">
+                        <i class="far fa-eye fs-5 opacity-75"></i>
+                        <span>{{ view_count }} views</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 mt-4 mt-lg-0 text-lg-end">
+                <div class="d-flex flex-column align-items-lg-end gap-3">
+                    {% if post.category %}
+                        <span class="badge bg-white text-dark bg-opacity-90 px-4 py-2 fs-6 rounded-pill shadow-sm">
+                            <i class="fas fa-tag me-2 text-primary"></i>{{ post.category.name }}
+                        </span>
+                    {% endif %}
+                    <button class="btn {% if user_has_liked %}btn-danger{% else %}btn-light{% endif %} btn-lg rounded-pill px-4 shadow-sm like-btn transition" data-post-id="{{ post.id }}">
+                        <i class="{% if user_has_liked %}fas{% else %}far{% endif %} fa-heart me-2"></i>
+                        <span class="like-count fw-bold">{{ like_count|default:0 }}</span> Likes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <article class="post-article reveal-up">
+                <div class="post-content mt-4">
+                    {{ post.content|safe }}
+                </div>
+                
+                <!-- Post Footer -->
+                <footer class="post-footer mt-5 pt-4 border-top">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="post-stats d-flex gap-2">
+                                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill shadow-sm">
+                                    <i class="fas fa-words me-1 text-primary"></i>{{ word_count }} words
+                                </span>
+                                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill shadow-sm">
+                                    <i class="fas fa-comments me-1 text-primary"></i>{{ comment_count }} comments
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="social-share text-md-end mt-3 mt-md-0 d-flex align-items-center justify-content-md-end gap-2">
+                                <h6 class="mb-0 me-2 fw-semibold">Share:</h6>
+                                <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title }}" 
+                                   class="btn btn-outline-primary rounded-circle p-2" target="_blank" style="width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center;">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
+                                   class="btn btn-outline-primary rounded-circle p-2" target="_blank" style="width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center;">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" 
+                                   class="btn btn-outline-primary rounded-circle p-2" target="_blank" style="width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center;">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </article>
+
+            <!-- Post Navigation -->
+            {% if previous_post or next_post %}
+            <div class="post-navigation mt-5">
+                <div class="row">
+                    <div class="col-md-6">
+                        {% if previous_post %}
+                            <div class="nav-item">
+                                <small class="text-muted d-block mb-1">
+                                    <i class="fas fa-arrow-left me-1"></i>Previous Post
+                                </small>
+                                <h6 class="mb-0">
+                                    <a href="{% url 'blog:post_detail' previous_post.slug %}" class="text-decoration-none">
+                                        {{ previous_post.title|truncatechars:40 }}
+                                    </a>
+                                </h6>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        {% if next_post %}
+                            <div class="nav-item">
+                                <small class="text-muted d-block mb-1">
+                                    Next Post <i class="fas fa-arrow-right ms-1"></i>
+                                </small>
+                                <h6 class="mb-0">
+                                    <a href="{% url 'blog:post_detail' next_post.slug %}" class="text-decoration-none">
+                                        {{ next_post.title|truncatechars:40 }}
+                                    </a>
+                                </h6>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Comments Section -->
+            <section class="comments-section mt-5">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h3>
+                        <i class="fas fa-comments me-2"></i>
+                        Comments ({{ comment_count }})
+                    </h3>
+                </div>
+
+                <!-- Comment Form -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-pen me-2"></i>Leave a Comment
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" id="comment-form">
+                            {% csrf_token %}
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="{{ comment_form.name.id_for_label }}" class="form-label">Name *</label>
+                                    {{ comment_form.name }}
+                                    {% if comment_form.name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ comment_form.name.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="{{ comment_form.email.id_for_label }}" class="form-label">Email *</label>
+                                    {{ comment_form.email }}
+                                    {% if comment_form.email.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ comment_form.email.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-12">
+                                    <label for="{{ comment_form.body.id_for_label }}" class="form-label">Comment *</label>
+                                    {{ comment_form.body }}
+                                    {% if comment_form.body.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ comment_form.body.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-paper-plane me-2"></i>Post Comment
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Comments List -->
+                {% if comments %}
+                    <div class="comments-list">
+                        {% for comment in comments %}
+                        <div class="comment-item p-3 rounded mb-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="comment-author">
+                                    <h6 class="mb-1">
+                                        <i class="fas fa-user-circle me-2"></i>{{ comment.name }}
+                                    </h6>
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock me-1"></i>{{ comment.created|date:"F d, Y \a\t H:i" }}
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="comment-body">
+                                <p class="mb-0">{{ comment.body|linebreaks }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No comments yet</h5>
+                        <p class="text-muted">Be the first to share your thoughts!</p>
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="sidebar">
+                <!-- Author Info -->
+                <div class="card sidebar-widget mb-4">
+                    <div class="card-body text-center">
+                        <div class="author-avatar mb-3">
+                            <i class="fas fa-user-circle fa-4x text-primary"></i>
+                        </div>
+                        <h5 class="card-title mb-2">{{ post.author.username }}</h5>
+                        <p class="text-muted mb-3">
+                            {% if post.author.first_name or post.author.last_name %}
+                                {{ post.author.first_name }} {{ post.author.last_name }}
+                            {% else %}
+                                Blog Author
+                            {% endif %}
+                        </p>
+                        <a href="{% url 'blog:author_posts' post.author.username %}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-user me-1"></i>View Profile
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Related Posts -->
+                {% if related_posts %}
+                <div class="card sidebar-widget mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-newspaper me-2"></i>Related Posts
+                        </h5>
+                        {% for related_post in related_posts %}
+                        <div class="related-post-item {% if not forloop.last %}border-bottom pb-3 mb-3{% endif %}">
+                            <div class="card related-post-card border-0 bg-light">
+                                <div class="card-body p-3">
+                                    <h6 class="card-title mb-2">
+                                        <a href="{% url 'blog:post_detail' related_post.slug %}" class="text-decoration-none">
+                                            {{ related_post.title|truncatechars:45 }}
+                                        </a>
+                                    </h6>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>{{ related_post.created_date|date:"M d, Y" }}
+                                        {% if related_post.category %}
+                                            <i class="fas fa-tag ms-2 me-1"></i>{{ related_post.category.name }}
+                                        {% endif %}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% show_sidebar %}
+
+                <!-- Table of Contents (if post has headings) -->
+                <div class="card sidebar-widget mb-4" id="toc-widget" style="display: none;">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-list me-2"></i>Table of Contents
+                        </h5>
+                        <div id="table-of-contents">
+                            <!-- Generated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Back to Top -->
+                <div class="text-center">
+                    <button class="btn btn-outline-primary" id="back-to-top">
+                        <i class="fas fa-arrow-up me-1"></i>Back to Top
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Like button functionality
+    const likeBtn = document.querySelector('.like-btn');
+    if (likeBtn) {
+        likeBtn.addEventListener('click', function() {
+            const postId = this.dataset.postId;
+            const likeCount = this.querySelector('.like-count');
+            
+            fetch(`/ajax/like-post/${postId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    likeCount.textContent = data.likes;
+                    if (data.action === 'liked') {
+                        this.classList.remove('btn-light');
+                        this.classList.add('btn-danger');
+                        this.querySelector('i').classList.remove('far');
+                        this.querySelector('i').classList.add('fas');
+                    } else {
+                        this.classList.remove('btn-danger');
+                        this.classList.add('btn-light');
+                        this.querySelector('i').classList.remove('fas');
+                        this.querySelector('i').classList.add('far');
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    }
+
+    // Generate Table of Contents
+    function generateTOC() {
+        const postContent = document.querySelector('.post-content');
+        const tocContainer = document.getElementById('table-of-contents');
+        const tocWidget = document.getElementById('toc-widget');
+        
+        if (!postContent || !tocContainer) return;
+        
+        const headings = postContent.querySelectorAll('h1, h2, h3, h4');
+        
+        if (headings.length > 0) {
+            const tocList = document.createElement('ul');
+            tocList.className = 'list-unstyled';
+            
+            headings.forEach((heading, index) => {
+                // Add ID to heading if it doesn't have one
+                if (!heading.id) {
+                    heading.id = `heading-${index}`;
+                }
+                
+                const listItem = document.createElement('li');
+                listItem.className = 'mb-2';
+                
+                const link = document.createElement('a');
+                link.href = `#${heading.id}`;
+                link.textContent = heading.textContent;
+                link.className = 'text-decoration-none';
+                
+                // Add indentation based on heading level
+                const level = parseInt(heading.tagName.substring(1));
+                if (level > 1) {
+                    link.style.paddingLeft = `${(level - 1) * 15}px`;
+                    link.style.fontSize = '0.9em';
+                }
+                
+                listItem.appendChild(link);
+                tocList.appendChild(listItem);
+            });
+            
+            tocContainer.appendChild(tocList);
+            tocWidget.style.display = 'block';
+        }
+    }
+    
+    generateTOC();
+
+    // Back to top functionality
+    const backToTopBtn = document.getElementById('back-to-top');
+    if (backToTopBtn) {
+        backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Show/hide button based on scroll position
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.style.display = 'block';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        });
+    }
+
+    // Smooth scrolling for TOC links
+    document.querySelectorAll('#table-of-contents a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Comment form enhancement
+    const commentForm = document.getElementById('comment-form');
+    if (commentForm) {
+        commentForm.addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Posting...';
+            submitBtn.disabled = true;
+            
+            // Re-enable button after form submission
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        });
+    }
+});
+</script>
+{% endblock %}
