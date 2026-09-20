@@ -14,9 +14,15 @@ A professional, fully-featured Full-Stack Django blog application designed for p
 - SEO-friendly URLs and meta structures.
 
 ## Screenshots
-> [!NOTE]
-> *Add screenshots of the Homepage, Post Detail, and Mobile Views here.*
-![Homepage Screenshot Placeholder](path/to/screenshot.png)
+
+**Homepage — Hero Section**
+![Homepage Hero](screenshot/homepage.png)
+
+**Homepage — Full Page**
+![Homepage Full](screenshot/homepage-full.png)
+
+**Homepage — Wide View**
+![Homepage Wide](screenshot/homepage-wide.png)
 
 ## Tech Stack
 - **Backend**: Python, Django 5.2.5, SQLite (ready for PostgreSQL)
