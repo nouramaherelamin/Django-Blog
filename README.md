@@ -109,7 +109,10 @@ The project is configured for professional deployment.
 - Implement user registration and profile management.
 - Add social authentication (OAuth).
 
-## Author
+## 👤 Author
+<div align="center">
+  
 **Noura Maher Elamin**
-- [GitHub](https://github.com/nouramaherelamin)
-- [LinkedIn](https://www.linkedin.com/in/nouramaherelamin/)
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-0A66C2?style=for-the-badge\&logo=linkedin\&logoColor=white)](https://www.linkedin.com/in/nouramaherelamin/)
+[![GitHub](https://img.shields.io/badge/GitHub-Profile-181717?style=for-the-badge\&logo=github\&logoColor=white)](https://github.com/nouramaherelamin)
