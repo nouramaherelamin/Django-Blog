@@ -109,7 +109,7 @@ The project is configured for professional deployment.
 - Implement user registration and profile management.
 - Add social authentication (OAuth).
 
-## 👤 Author
+# 👩‍💻 Author
 <div align="center">
   
 **Noura Maher Elamin**
